@@ -1,9 +1,10 @@
 <?php
 
-namespace Service;
+namespace Services;
 
 
 use Data\ChildViewData;
+use Data\RegisterViewData;
 
 interface ChildServiceInterface
 {
@@ -42,4 +43,10 @@ interface ChildServiceInterface
      */
     public function findByMissingNow();
 
+    /**
+     * @return RegisterViewData
+     */
+    public function getRegisterViewData();
+
+    public function addChild($name, $surName, $lastName, $egn, $groupName = null);
 }

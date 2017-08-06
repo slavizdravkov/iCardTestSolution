@@ -6,6 +6,8 @@ namespace Data;
 
 class ChildViewData
 {
+    private $id;
+
     private $name;
 
     private $surName;
@@ -14,9 +16,11 @@ class ChildViewData
 
     private $egn;
 
-    private $admissionDate;
+    private $groupName;
 
-    private $dismissionDate;
+    private $teacherName;
+
+    private $admissionDate;
 
     private $isPresent;
 
@@ -25,6 +29,14 @@ class ChildViewData
     private $missingFrom;
 
     private $missingTo;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return mixed
@@ -61,6 +73,22 @@ class ChildViewData
     /**
      * @return mixed
      */
+    public function getGroupName()
+    {
+        return $this->groupName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTeacherName()
+    {
+        return $this->teacherName;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getAdmissionDate()
     {
         return $this->admissionDate;
@@ -69,15 +97,7 @@ class ChildViewData
     /**
      * @return mixed
      */
-    public function getDismissionDate()
-    {
-        return $this->dismissionDate;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsPresent()
+    public function getisPresent()
     {
         return $this->isPresent;
     }
@@ -106,5 +126,8 @@ class ChildViewData
         return $this->missingTo;
     }
 
-
+    public function getAge()
+    {
+        return 5;
+    }
 }

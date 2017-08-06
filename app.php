@@ -12,4 +12,4 @@ $db = new \Adapter\PDODatabase(
 );
 
 $app = new \Core\Application();
-$childService = new \Service\ChildService($db);
+$childService = new \Services\ChildService($db);
