@@ -102,7 +102,8 @@
                 <th>Дата на постъпване</th>
                 <th>Присъствие</th>
                 <th>Причина за отсъствие</th>
-                <th>Период на отсъствие</th>
+                <th>До кога ще отсъства / Период на отсъствие</th>
+                <th>Редактирай</th>
             </tr>
         </thead>
         <tbody>
@@ -116,8 +117,19 @@
                     <td><?=$child->getAge(); ?></td>
                     <td><?=$child->getTeacherName(); ?></td>
                     <td><?=$child->getAdmissionDate(); ?></td>
-                    <td><?=$child->getisPresent(); ?></td>
-                    <td><?=$child->getMissingReason(); ?></td>
+                    <td><?=$child->getPresentStatus(); ?></td>
+                    <?php if (!$child->isMissing()): ?>
+                        <form method="post" action="index.php?id=<?= $child->getId(); ?>" class="form-horizontal">
+                            <td><input class="form-control input-sm" type="text" id="inputSmall" name="missingReason"></td>
+                            <td><input class="form-control input-sm" type="text" id="inputSmall" name="endMissing"></td>
+                            <td><button type="submit" class="btn btn-primary" name="missing">Отсъства</button> </td>
+                        </form>
+                    <?php else: ?>
+                        <td><?=$child->getMissingReason(); ?></td>
+                        <td><?=$child->getMissingPeriod(); ?></td>
+                        <td><a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a></td>
+
+                    <?php endif; ?>
                 </tr>
             <?php endforeach;?>
         </tbody>

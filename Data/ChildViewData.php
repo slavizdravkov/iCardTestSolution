@@ -97,7 +97,7 @@ class ChildViewData
     /**
      * @return mixed
      */
-    public function getisPresent()
+    public function getIsPresent()
     {
         return $this->isPresent;
     }
@@ -129,5 +129,24 @@ class ChildViewData
     public function getAge()
     {
         return 5;
+    }
+
+    public function getPresentStatus()
+    {
+        if ($this->isPresent === 'yes') {
+            return 'Да';
+        }
+
+        return 'Не';
+    }
+
+    public function isMissing()
+    {
+        return $this->isPresent === 'no';
+    }
+
+    public function getMissingPeriod()
+    {
+        return "от {$this->getMissingFrom()} до {$this->getMissingTo()}";
     }
 }

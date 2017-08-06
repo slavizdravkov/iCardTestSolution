@@ -53,4 +53,9 @@ interface ChildServiceInterface
     public function getRegisterViewData();
 
     public function addChild($name, $surName, $lastName, $egn, $groupName);
+
+    public function changeToMissing(string $reason, string $missingTo, string $id);
+
+    public function changeToPresent(string $id);
+
 }

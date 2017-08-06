@@ -42,8 +42,8 @@ class ChildService implements ChildServiceInterface
               DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
               is_present AS isPresent,
 			  missing_reason AS missingReason,
-			  missing_from AS missingFrom,
-			  missing_to AS missingTo
+			  DATE_FORMAT (missing_from, '%d-%m-%Y') AS missingFrom,
+			  DATE_FORMAT (missing_to, '%d-%m-%Y') AS missingTo
 		  FROM
 				childrens
 		  INNER JOIN
@@ -259,7 +259,7 @@ class ChildService implements ChildServiceInterface
 				groups
 		  ON
 				childrens.group_id = groups.id
-		  WHERE is_present = 'не' AND dismission_date IS NULL";
+		  WHERE is_present = 'no' AND dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute();
@@ -307,7 +307,7 @@ class ChildService implements ChildServiceInterface
         if (intval($groupId)) {
             $admissionDate = new \DateTime();
             $admissionDate = $admissionDate->format('Y-m-d H:i:s');
-            $isPresent = 'да';
+            $isPresent = 'yes';
             $status = 'accepted';
         }
         else {
@@ -347,5 +347,39 @@ class ChildService implements ChildServiceInterface
             $groupId,
             $status
         ]);
+    }
+
+    public function changeToMissing(string $reason, string $missingTo, string $id)
+    {
+        $missingFromDate = new \DateTime();
+        $missingFromDate = $missingFromDate->format('Y-m-d H:i:s');
+        $missingToDate = new \DateTime($missingTo);
+        $missingToDate = $missingToDate->format('Y-m-d H:i:s');
+
+        $query = "UPDATE childrens
+                    SET 
+                      is_present = ?,
+                      missing_reason = ?,
+                      missing_from = ?,
+                      missing_to = ?
+                    WHERE id = ?
+                 ";
+        $statement = $this->db->prepare($query);
+        $statement->execute(['no', $reason, $missingFromDate, $missingTo, $id]);
+    }
+
+    public function changeToPresent(string $id)
+    {
+        $query = "UPDATE childrens
+                    SET 
+                      is_present = ?,
+                      missing_reason = ?,
+                      missing_from = ?,
+                      missing_to = ?
+                    WHERE id = ?
+                 ";
+        $statement = $this->db->prepare($query);
+        $statement->execute(['yes', null, null, null, $id]);
+
     }
 }

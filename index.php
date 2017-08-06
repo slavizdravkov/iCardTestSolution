@@ -1,6 +1,19 @@
 <?php
 require_once 'app.php';
 
+
+if (isset($_GET['id'])){
+    if (isset($_POST['missing'])){
+        $childService->changeToMissing(
+            $_POST['missingReason'],
+            $_POST['endMissing'],
+            $_GET['id']);
+    }
+    else{
+        $childService->changeToPresent($_GET['id']);
+    }
+}
+
 $data = $childService->findAllAccepted();
 
 if (isset($_POST['filter'])){
