@@ -50,7 +50,7 @@ class ChildService implements ChildServiceInterface
 				groups
 		  ON
 				childrens.group_id = groups.id
-		  WHERE status = 'accepted' AND dismission_date IS NULL ";
+		  WHERE status = 'accepted' AND dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute();
@@ -65,39 +65,173 @@ class ChildService implements ChildServiceInterface
      */
     public function findAllWaiting()
     {
-        // TODO: Implement findAllWaiting() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              group_id AS groupName,
+              dismission_date AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+			  childrens
+		  WHERE status = 'waiting' AND dismission_date IS NULL";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute();
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
     }
 
     /**
+     * @param string $admissionDate
      * @return ChildViewData[]|\Generator
      */
-    public function findByAdmissionData()
+    public function findByAdmissionDate(string $admissionDate)
     {
-        // TODO: Implement findByAdmissionData() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              groups.name AS groupName,
+              groups.teacher_name AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+				childrens
+		  INNER JOIN
+				groups
+		  ON
+				childrens.group_id = groups.id
+		  WHERE DATE_FORMAT (childrens.admission_date, '%d-%m-%Y') = ? AND dismission_date IS NULL";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([$admissionDate]);
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
+
     }
 
     /**
+     * @param string $dismissionDate
      * @return ChildViewData[]|\Generator
      */
-    public function findByDismissionData()
+    public function findByDismissionDate(string $dismissionDate)
     {
-        // TODO: Implement findByDismissionData() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              group_id AS groupName,
+              status AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+				childrens
+		  WHERE DATE_FORMAT (childrens.dismission_date, '%d-%m-%Y') = ?";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([$dismissionDate]);
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
+
+
     }
 
     /**
+     * @param string $name
      * @return ChildViewData[]|\Generator
      */
-    public function findByName()
+    public function findByName(string $name)
     {
-        // TODO: Implement findByName() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              groups.name AS groupName,
+              groups.teacher_name AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+				childrens
+		  INNER JOIN
+				groups
+		  ON
+				childrens.group_id = groups.id
+		  WHERE childrens.name = ? AND dismission_date IS NULL";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([$name]);
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
     }
 
     /**
+     * @param string $groupName
      * @return ChildViewData[]|\Generator
      */
-    public function findByGroup()
+    public function findByGroup(string $groupName)
     {
-        // TODO: Implement findByGroup() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              groups.name AS groupName,
+              groups.teacher_name AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+				childrens
+		  INNER JOIN
+				groups
+		  ON
+				childrens.group_id = groups.id
+		  WHERE groups.name = ? AND childrens.dismission_date IS NULL";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute([$groupName]);
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
     }
 
     /**
@@ -105,7 +239,35 @@ class ChildService implements ChildServiceInterface
      */
     public function findByMissingNow()
     {
-        // TODO: Implement findByMissingNow() method.
+        $query = "
+          SELECT
+              childrens.id,
+              childrens.name,
+              surname AS surName,
+              lastname As lastName,
+              egn,
+              groups.name AS groupName,
+              groups.teacher_name AS teacherName,
+              DATE_FORMAT (admission_date, '%d-%m-%Y') AS admissionDate,
+              is_present AS isPresent,
+			  missing_reason AS missingReason,
+			  missing_from AS missingFrom,
+			  missing_to AS missingTo
+		  FROM
+				childrens
+		  INNER JOIN
+				groups
+		  ON
+				childrens.group_id = groups.id
+		  WHERE is_present = 'не' AND dismission_date IS NULL";
+
+        $statement = $this->db->prepare($query);
+        $statement->execute();
+
+        while ($child = $statement->fetchObject(ChildViewData::class)) {
+            yield $child;
+        }
+
     }
 
     /**
@@ -136,16 +298,20 @@ class ChildService implements ChildServiceInterface
         return $viewData;
     }
 
-    public function addChild($name, $surName, $lastName, $egn, $groupId = null)
+    public function addChild($name, $surName, $lastName, $egn, $groupId)
     {
-        $admissionDAte = null;
+        $admissionDate = null;
         $isPresent = null;
         $status = 'waiting';
 
-        if ($groupId !== null) {
-            $admissionDAte = new \DateTime();
+        if (intval($groupId)) {
+            $admissionDate = new \DateTime();
+            $admissionDate = $admissionDate->format('Y-m-d H:i:s');
             $isPresent = 'да';
             $status = 'accepted';
+        }
+        else {
+            $groupId = null;
         }
 
         $query = "INSERT INTO childrens
@@ -176,7 +342,7 @@ class ChildService implements ChildServiceInterface
             $surName,
             $lastName,
             $egn,
-            $admissionDAte->format('Y-m-d H:i:s'),
+            $admissionDate,
             $isPresent,
             $groupId,
             $status

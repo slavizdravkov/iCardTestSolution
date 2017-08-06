@@ -39,61 +39,72 @@
 </header>
 
 <body>
-<div class="container body-content span=8 offset=2">
-    <div class="well">
-        <form class="form-horizontal" method="post" action="#">
-            <fieldset>
-                <legend>Регистрация</legend>
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+            <form class="form-horizontal" method="post" action="#">
+                <fieldset>
+                    <legend>Регистрация</legend>
 
-                <div class="form-group">
-                    <label for="name" class="col-sm-4 control-label">Име</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="name" placeholder="Име" name="name">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-4 control-label">Име</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="name" placeholder="Име" name="name">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="surName" class="col-sm-4 control-label">Презиме</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="surName" placeholder="Презиме" name="surName">
+                    <div class="form-group">
+                        <label for="surName" class="col-sm-4 control-label">Презиме</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="surName" placeholder="Презиме" name="surName">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="lastName" class="col-sm-4 control-label">Фамилия</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="lastName" placeholder="Фамилия" name="lastName">
+                    <div class="form-group">
+                        <label for="lastName" class="col-sm-4 control-label">Фамилия</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="lastName" placeholder="Фамилия" name="lastName">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="egn" class="col-sm-4 control-label">ЕГН</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control" id="egn" placeholder="ЕГН" name="egn">
+                    <div class="form-group">
+                        <label for="egn" class="col-sm-4 control-label">ЕГН</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="egn" placeholder="ЕГН" name="egn">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="groupId" class="col-sm-4 control-label">Група</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" id="select" name="groupId">
-                            <?php foreach ($data->getGroups() as $group): ?>
-                                <option value="<?=$group->getId();?>">
-                                    <?=$group->getName();?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                    <div class="form-group">
+                        <label for="groupId" class="col-sm-4 control-label">Група</label>
+                        <?php if ($data->getGroups()->current() === null): ?>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="select" name="groupId">
+                                    <option>
+                                        Няма свободни места в групите
+                                    </option>
+                                </select>
+                            </div>
+                        <?php else: ?>
+                            <div class="col-sm-4">
+                                <select class="form-control" id="select" name="groupId">
+                                    <?php foreach ($data->getGroups() as $group): ?>
+                                        <option value="<?=$group->getId();?>">
+                                            <?=$group->getName();?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-sm-4 col-sm-offset-4">
-                        <button type="reset" class="btn btn-default">Отказ</button>
-                        <button type="submit" class="btn btn-primary" name="register">Регистрирай</button>
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button type="reset" class="btn btn-default">Отказ</button>
+                            <button type="submit" class="btn btn-primary" name="register">Регистрирай</button>
+                        </div>
                     </div>
-                </div>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        </div>
     </div>
 </body>
 </html>

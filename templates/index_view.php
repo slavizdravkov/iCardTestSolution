@@ -39,6 +39,56 @@
 </header>
 
 <body>
+    <div class="container body-content span=8 offset=2">
+        <div class="well">
+            <form class="form-horizontal" method="post" action="#">
+                <fieldset>
+                    <legend>Филтър</legend>
+
+                    <div class="form-group">
+                        <label for="filterName" class="col-sm-4 control-label">Филтрирай по:</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="select" name="filterName">
+                                <option value="admissionDate">
+                                    Дата на постъпване
+                                </option>
+                                <option value="dismissionDate">
+                                    Дата на отписване
+                                </option>
+                                <option value="name">
+                                    Име
+                                </option>
+                                <option value="group">
+                                    Група
+                                </option>
+                                <option value="missing">
+                                    Отсъстващи в момента
+                                </option>
+                                <option value="waiting">
+                                    Чакащи за постъпване
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="key" class="col-sm-4 control-label">Ключ</label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="key" placeholder="Ключ" name="key">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-4 col-sm-offset-4">
+                            <button type="reset" class="btn btn-default">Отказ</button>
+                            <button type="submit" class="btn btn-primary" name="filter">Филтрирай</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
     <table class="table table-striped table-hover ">
         <thead>
             <tr>

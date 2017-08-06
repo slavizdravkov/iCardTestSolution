@@ -19,24 +19,28 @@ interface ChildServiceInterface
     public function findAllWaiting();
 
     /**
+     * @param string $admissionDate
      * @return ChildViewData[]|\Generator
      */
-    public function findByAdmissionData();
+    public function findByAdmissionDate(string $admissionDate);
 
     /**
+     * @param string $dismissionDate
      * @return ChildViewData[]|\Generator
      */
-    public function findByDismissionData();
+    public function findByDismissionDate(string $dismissionDate);
 
     /**
+     * @param string $name
      * @return ChildViewData[]|\Generator
      */
-    public function findByName();
+    public function findByName(string $name);
 
     /**
+     * @param string $groupName
      * @return ChildViewData[]|\Generator
      */
-    public function findByGroup();
+    public function findByGroup(string $groupName);
 
     /**
      * @return ChildViewData[]|\Generator
@@ -48,5 +52,5 @@ interface ChildServiceInterface
      */
     public function getRegisterViewData();
 
-    public function addChild($name, $surName, $lastName, $egn, $groupName = null);
+    public function addChild($name, $surName, $lastName, $egn, $groupName);
 }
