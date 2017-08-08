@@ -1,4 +1,5 @@
-<?php /** @var $data \Data\ChildViewData[] */?>
+<?php /** @var $childData \Data\ChildViewData[] */?>
+<?php /** @var $templateData \Data\TemplatesViewData */?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,8 +7,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css">
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-datepicker3.css">
+    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="js/moment.js"></script>
+    <script type="text/javascript" src="js/transition.js"></script>
+    <script type="text/javascript" src="js/collapse.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="js/bg.js"></script>
     <title>Home</title>
 </head>
 
@@ -39,6 +46,73 @@
 </header>
 
 <body>
+    <?php if($templateData->getError()): ?>
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong><?= $templateData->getError(); ?></strong> <a href="#" class="alert-link">Направете корекции</a> и изпратете отново.
+        </div>
+    <?php endif; ?>
+
+    <table class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>Име</th>
+                <th>Презиме</th>
+                <th>Фамилия</th>
+                <th>ЕГН</th>
+                <th>Група</th>
+                <th>Възраст</th>
+                <th>Имена на учителката</th>
+                <th>Дата на постъпване</th>
+                <th>Присъствие</th>
+                <th>Причина за отсъствие</th>
+                <th>До кога ще отсъства / Период на отсъствие</th>
+                <th>Редактирай</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($childData as $child): ?>
+                <tr>
+                    <td><?=$child->getName(); ?></td>
+                    <td><?=$child->getSurName(); ?></td>
+                    <td><?=$child->getLastName(); ?></td>
+                    <td><?=$child->getEgn(); ?></td>
+                    <td><?=$child->getGroupName(); ?></td>
+                    <td><?=$child->getAge(); ?></td>
+                    <td><?=$child->getTeacherName(); ?></td>
+                    <td><?=$child->getAdmissionDate(); ?></td>
+                    <td><?=$child->getPresentStatus(); ?></td>
+                    <?php if ($child->isPresentNow()): ?>
+                        <form method="post" action="index.php?id=<?= $child->getId(); ?>" class="form-horizontal">
+                            <td><input class="form-control" type="text" id="inputSmall" name="missingReason"></td>
+                            <td>
+                                <div class="col-lg-8">
+                                    <div class="row">
+                                        <div class=''>
+                                            <div class="form-group">
+                                                <div class='input-group date' id='datetimepicker2'>
+                                                    <input type='text' class="form-control" name="missingTo">
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><button type="submit" class="btn btn-primary" name="missing">Отсъства</button> </td>
+                        </form>
+                    <?php else: ?>
+                        <td><?=$child->getMissingReason(); ?></td>
+                        <td><?=$child->getMissingPeriod(); ?></td>
+                        <td><a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a></td>
+                    <?php endif; ?>
+                </tr>
+            <?php endforeach;?>
+        </tbody>
+    </table>
+
     <div class="container body-content span=8 offset=2">
         <div class="well">
             <form class="form-horizontal" method="post" action="#">
@@ -72,9 +146,38 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="key" class="col-sm-4 control-label">Ключ</label>
+                        <label for="filterString" class="col-sm-4 control-label">Ключ</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="key" placeholder="Ключ" name="key">
+                            <input type="text" class="form-control" id="filterString" placeholder="Ключ" name="filterString">
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <div class="row">
+                            <label for="datetimepicker1" class="col-sm-4 control-label">Изберете дата</label>
+                            <div class='col-sm-4'>
+                                <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker1'>
+                                        <input type='text' class="form-control" name="inputDate">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="select" class="col-sm-4 control-label">Група</label>
+                        <div class="col-sm-4">
+                            <select class="form-control" id="select" name="groupName">
+                                <?php foreach ($templateData->getGroups() as $group): ?>
+                                    <option value="<?=$group->getName();?>">
+                                        <?=$group->getName();?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
 
@@ -89,50 +192,16 @@
         </div>
     </div>
 
-    <table class="table table-striped table-hover ">
-        <thead>
-            <tr>
-                <th>Име</th>
-                <th>Презиме</th>
-                <th>Фамилия</th>
-                <th>ЕГН</th>
-                <th>Група</th>
-                <th>Възраст</th>
-                <th>Имена на учителката</th>
-                <th>Дата на постъпване</th>
-                <th>Присъствие</th>
-                <th>Причина за отсъствие</th>
-                <th>До кога ще отсъства / Период на отсъствие</th>
-                <th>Редактирай</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($data as $child): ?>
-                <tr>
-                    <td><?=$child->getName(); ?></td>
-                    <td><?=$child->getSurName(); ?></td>
-                    <td><?=$child->getLastName(); ?></td>
-                    <td><?=$child->getEgn(); ?></td>
-                    <td><?=$child->getGroupName(); ?></td>
-                    <td><?=$child->getAge(); ?></td>
-                    <td><?=$child->getTeacherName(); ?></td>
-                    <td><?=$child->getAdmissionDate(); ?></td>
-                    <td><?=$child->getPresentStatus(); ?></td>
-                    <?php if (!$child->isMissing()): ?>
-                        <form method="post" action="index.php?id=<?= $child->getId(); ?>" class="form-horizontal">
-                            <td><input class="form-control input-sm" type="text" id="inputSmall" name="missingReason"></td>
-                            <td><input class="form-control input-sm" type="text" id="inputSmall" name="endMissing"></td>
-                            <td><button type="submit" class="btn btn-primary" name="missing">Отсъства</button> </td>
-                        </form>
-                    <?php else: ?>
-                        <td><?=$child->getMissingReason(); ?></td>
-                        <td><?=$child->getMissingPeriod(); ?></td>
-                        <td><a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a></td>
 
-                    <?php endif; ?>
-                </tr>
-            <?php endforeach;?>
-        </tbody>
-    </table>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                locale: 'bg'
+            });
+            $('#datetimepicker2').datetimepicker({
+                locale: 'bg'
+            });
+        });
+    </script>
 </body>
 </html>

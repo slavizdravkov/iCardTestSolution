@@ -8,7 +8,7 @@ class Application
 {
     const FRONTEND_FOLDER = 'templates';
 
-    public function loadTemplate($templateName, $data = null)
+    public function loadTemplate($templateName, $templateData = null, $childData = null)
     {
         include self::FRONTEND_FOLDER
             . '/'

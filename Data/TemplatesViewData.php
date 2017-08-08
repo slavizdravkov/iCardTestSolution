@@ -3,12 +3,14 @@
 namespace Data;
 
 
-class RegisterViewData
+class TemplatesViewData
 {
     /**
      * @var Group[]|\Generator
      */
     private $groups;
+
+    private $error = null;
 
     /**
      * @return Group[]|\Generator
@@ -24,6 +26,22 @@ class RegisterViewData
     public function setGroups(callable $groups)
     {
         $this->groups = $groups();
+    }
+
+    /**
+     * @return null
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param null $error
+     */
+    public function setError($error)
+    {
+        $this->error = $error;
     }
 
 }

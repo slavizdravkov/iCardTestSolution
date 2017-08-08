@@ -1,4 +1,4 @@
-<?php /** $data \Data\RegisterViewData */ ?>
+<?php /** $templateData \Data\TemplatesViewData */ ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,6 +39,13 @@
 </header>
 
 <body>
+    <?php if($templateData->getError()): ?>
+        <div class="alert alert-dismissible alert-danger">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong><?= $templateData->getError(); ?></strong> <a href="#" class="alert-link">Направете корекции</a> и регистрирайте отново.
+        </div>
+    <?php endif; ?>
+
     <div class="container body-content span=8 offset=2">
         <div class="well">
             <form class="form-horizontal" method="post" action="#">
@@ -75,7 +82,7 @@
 
                     <div class="form-group">
                         <label for="groupId" class="col-sm-4 control-label">Група</label>
-                        <?php if ($data->getGroups()->current() === null): ?>
+                        <?php if ($templateData->getGroups()->current() === null): ?>
                             <div class="col-sm-4">
                                 <select class="form-control" id="select" name="groupId">
                                     <option>
@@ -86,7 +93,7 @@
                         <?php else: ?>
                             <div class="col-sm-4">
                                 <select class="form-control" id="select" name="groupId">
-                                    <?php foreach ($data->getGroups() as $group): ?>
+                                    <?php foreach ($templateData->getGroups() as $group): ?>
                                         <option value="<?=$group->getId();?>">
                                             <?=$group->getName();?>
                                         </option>

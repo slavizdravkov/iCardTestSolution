@@ -1,51 +1,62 @@
 <?php
 require_once 'app.php';
 
+//var_dump($_POST);
+//exit;
+$templateData = $childService->getIndexViewData();
 
 if (isset($_GET['id'])){
     if (isset($_POST['missing'])){
-        $childService->changeToMissing(
-            $_POST['missingReason'],
-            $_POST['endMissing'],
-            $_GET['id']);
+        try{
+            $childService->changeToMissing(
+                $_POST['missingReason'],
+                $_POST['missingTo'],
+                $_GET['id']);
+        }catch (Exception $e){
+            $templateData->setError($e->getMessage());
+        }
     }
     else{
-        $childService->changeToPresent($_GET['id']);
+        try{
+            $childService->changeToPresent($_GET['id']);
+        } catch (Exception $e){
+            $templateData->setError($e->getMessage());
+        }
     }
 }
 
-$data = $childService->findAllAccepted();
+$childData = $childService->findAllAccepted();
 
 if (isset($_POST['filter'])){
     switch ($_POST['filterName']){
         case 'name':
-            $data = $childService->findByName($_POST['key']);
+            $childData = $childService->findByName($_POST['key']);
             break;
 
         case 'waiting':
-            $data = $childService->findAllWaiting();
+            $childData = $childService->findAllWaiting();
             break;
 
         case 'missing':
-            $data = $childService->findByMissingNow();
+            $childData = $childService->findByMissingNow();
             break;
 
         case 'admissionDate':
-            $data = $childService->findByAdmissionDate($_POST['key']);
+            $childData = $childService->findByAdmissionDate($_POST['inputDate']);
             break;
 
         case 'dismissionDate':
-            $data = $childService->findByDismissionDate($_POST['key']);
+            $childData = $childService->findByDismissionDate($_POST['inputDate']);
             break;
 
         case 'group':
-            $data = $childService->findByGroup($_POST['key']);
+            $childData = $childService->findByGroup($_POST['groupName']);
             break;
 
         default:
-            $data = $childService->findAllAccepted();
+            $childData = $childService->findAllAccepted();
             break;
     }
 }
 
-$app->loadTemplate('index_view', $data);
+$app->loadTemplate('index_view', $templateData, $childData);

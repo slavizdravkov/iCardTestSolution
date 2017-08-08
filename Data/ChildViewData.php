@@ -128,25 +128,39 @@ class ChildViewData
 
     public function getAge()
     {
-        return 5;
+        $today = new \DateTime();
+        $year = intval($today->format('Y')); //Вземаме текущата година
+        $kidBornYear = $year - (($year - intval(substr($this->getEgn(),0,2))) % 10); //Изчисляване годината на раждане на детето
+        $kidBornMonth = intval(substr($this->getEgn(),2,2)) - 40; //Изчисляваме месеца на раждане
+        $kidBornDay = intval(substr($this->getEgn(),4,2));  //Вземаме дена на раждане на детето
+        $kidBornDate = new \DateTime("{$kidBornYear}-{$kidBornMonth}-{$kidBornDay}");
+        $interval = $today->diff($kidBornDate); //Намираме разликата между днешната дата и датата на раждане
+
+        return $interval->format('%y'); //Връщаме разликата конвертирана в години
     }
 
     public function getPresentStatus()
     {
-        if ($this->isPresent === 'yes') {
+        if ($this->getIsPresent() === 'yes') {
             return 'Да';
+        }
+
+        if ($this->getIsPresent() === null) {
+            return 'Детето е отписано';
         }
 
         return 'Не';
     }
 
-    public function isMissing()
+    public function isPresentNow()
     {
-        return $this->isPresent === 'no';
+        return $this->getIsPresent() === 'yes';
     }
 
     public function getMissingPeriod()
     {
-        return "от {$this->getMissingFrom()} до {$this->getMissingTo()}";
+        if ($this->getIsPresent() === 'no'){
+            return "от {$this->getMissingFrom()} до {$this->getMissingTo()}";
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace Services;
 
 
 use Data\ChildViewData;
-use Data\RegisterViewData;
+use Data\TemplatesViewData;
 
 interface ChildServiceInterface
 {
@@ -48,9 +48,9 @@ interface ChildServiceInterface
     public function findByMissingNow();
 
     /**
-     * @return RegisterViewData
+     * @return TemplatesViewData
      */
-    public function getRegisterViewData();
+    public function getAddChildViewData();
 
     public function addChild($name, $surName, $lastName, $egn, $groupName);
 

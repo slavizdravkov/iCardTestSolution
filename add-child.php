@@ -1,16 +1,21 @@
 <?php
 require_once 'app.php';
 
-$data = $childService->getRegisterViewData();
+$templateData = $childService->getAddChildViewData();
 
 if (isset($_POST['register'])) {
-    $childService->addChild(
-        $_POST['name'],
-        $_POST['surName'],
-        $_POST['lastName'],
-        $_POST['egn'],
-        $_POST['groupId']
-    );
+    try {
+        $childService->addChild(
+            $_POST['name'],
+            $_POST['surName'],
+            $_POST['lastName'],
+            $_POST['egn'],
+            $_POST['groupId']
+        );
+    } catch (Exception $e) {
+        $templateData->setError($e->getMessage());
+    }
+
 }
 
-$app->loadTemplate('add-child_view', $data);
+$app->loadTemplate('add-child_view', $templateData);
