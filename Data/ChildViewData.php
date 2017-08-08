@@ -126,6 +126,10 @@ class ChildViewData
         return $this->missingTo;
     }
 
+    /**
+     * @return string
+     * Изчислява годините на детето
+     */
     public function getAge()
     {
         $today = new \DateTime();
@@ -139,24 +143,36 @@ class ChildViewData
         return $interval->format('%y'); //Връщаме разликата конвертирана в години
     }
 
+    /**
+     * @return string
+     * Показва статуса на детето /присъства, отсъства или е отписано/
+     */
     public function getPresentStatus()
     {
         if ($this->getIsPresent() === 'yes') {
             return 'Да';
         }
 
-        if ($this->getIsPresent() === null) {
-            return 'Детето е отписано';
+        if ($this->getIsPresent() === 'no') {
+            return 'Не';
         }
 
-        return 'Не';
+        return '';
     }
 
+    /**
+     * @return bool
+     * Проверява дали детето присъства
+     */
     public function isPresentNow()
     {
         return $this->getIsPresent() === 'yes';
     }
 
+    /**
+     * @return string
+     * Показва периода на отсъствие на детето
+     */
     public function getMissingPeriod()
     {
         if ($this->getIsPresent() === 'no'){

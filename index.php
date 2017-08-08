@@ -1,6 +1,7 @@
 <?php
 require_once 'app.php';
 
+//var_dump($_GET);
 //var_dump($_POST);
 //exit;
 $templateData = $childService->getIndexViewData();
@@ -12,6 +13,7 @@ if (isset($_GET['id'])){
                 $_POST['missingReason'],
                 $_POST['missingTo'],
                 $_GET['id']);
+
         }catch (Exception $e){
             $templateData->setError($e->getMessage());
         }
@@ -23,6 +25,9 @@ if (isset($_GET['id'])){
             $templateData->setError($e->getMessage());
         }
     }
+    header("Location: index.php");
+    exit;
+
 }
 
 $childData = $childService->findAllAccepted();
@@ -30,7 +35,7 @@ $childData = $childService->findAllAccepted();
 if (isset($_POST['filter'])){
     switch ($_POST['filterName']){
         case 'name':
-            $childData = $childService->findByName($_POST['key']);
+            $childData = $childService->findByName($_POST['filterString']);
             break;
 
         case 'waiting':

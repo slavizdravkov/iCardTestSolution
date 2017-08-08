@@ -37,6 +37,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Администриране <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="add-child.php">Запиши дете в регистъра</a></li>
+                            <li><a href="#">Добави група</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -101,12 +102,20 @@
                                     </div>
                                 </div>
                             </td>
-                            <td><button type="submit" class="btn btn-primary" name="missing">Отсъства</button> </td>
+                            <td>
+                                <button type="submit" class="btn btn-primary" name="missing">Отсъства</button>
+                            </td>
                         </form>
                     <?php else: ?>
                         <td><?=$child->getMissingReason(); ?></td>
                         <td><?=$child->getMissingPeriod(); ?></td>
-                        <td><a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a></td>
+                        <?php if ($child->getTeacherName()): ?>
+                            <td>
+                                <a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a>
+                            </td>
+                        <?php else: ?>
+                            <td></td>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </tr>
             <?php endforeach;?>

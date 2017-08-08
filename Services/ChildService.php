@@ -10,6 +10,27 @@ use Data\TemplatesViewData;
 
 class ChildService implements ChildServiceInterface
 {
+    const BASE_SELECT_QUERY = "          
+              SELECT
+                  childrens.id,
+                  childrens.name,
+                  surname AS surName,
+                  lastname As lastName,
+                  egn,
+                  groups.name AS groupName,
+                  groups.teacher_name AS teacherName,
+                  DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
+                  is_present AS isPresent,
+                  missing_reason AS missingReason,
+                  DATE_FORMAT (missing_from, '%e.%m.%Y') AS missingFrom,
+                  DATE_FORMAT (missing_to, '%e.%m.%Y') AS missingTo
+              FROM
+                    childrens
+              INNER JOIN
+                    groups
+              ON
+                    childrens.group_id = groups.id
+          ";
     /**
      * @var DatabaseInterface
      */
@@ -27,31 +48,13 @@ class ChildService implements ChildServiceInterface
 
     /**
      * @return ChildViewData[]|\Generator
+     * Функция, показваща всички деца, посещаващи градината
      */
     public function findAllAccepted()
     {
-        $query = "
-          SELECT
-              childrens.id,
-              childrens.name,
-              surname AS surName,
-              lastname As lastName,
-              egn,
-              groups.name AS groupName,
-              groups.teacher_name AS teacherName,
-              DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
-              is_present AS isPresent,
-			  missing_reason AS missingReason,
-			  DATE_FORMAT (missing_from, '%e.%m.%Y') AS missingFrom,
-			  DATE_FORMAT (missing_to, '%e.%m.%Y') AS missingTo
-		  FROM
-				childrens
-		  INNER JOIN
-				groups
-		  ON
-				childrens.group_id = groups.id
-		  WHERE status = 'accepted' AND dismission_date IS NULL
-		  ORDER BY childrens.name";
+        $query = self::BASE_SELECT_QUERY
+                    . " WHERE status = 'accepted' AND dismission_date IS NULL
+                      ORDER BY childrens.name";
 
         $statement = $this->db->prepare($query);
         $statement->execute();
@@ -63,6 +66,7 @@ class ChildService implements ChildServiceInterface
 
     /**
      * @return ChildViewData[]|\Generator
+     * Показва всички деца, чакащи за постъпване
      */
     public function findAllWaiting()
     {
@@ -95,31 +99,13 @@ class ChildService implements ChildServiceInterface
     /**
      * @param string $admissionDate
      * @return ChildViewData[]|\Generator
+     * Намира всички деца по зададена дата на постъпване
      */
     public function findByAdmissionDate(string $admissionDate)
     {
         $admDate = $this->extractDate($admissionDate);
-        $query = "
-          SELECT
-              childrens.id,
-              childrens.name,
-              surname AS surName,
-              lastname As lastName,
-              egn,
-              groups.name AS groupName,
-              groups.teacher_name AS teacherName,
-              DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
-              is_present AS isPresent,
-			  missing_reason AS missingReason,
-			  missing_from AS missingFrom,
-			  missing_to AS missingTo
-		  FROM
-				childrens
-		  INNER JOIN
-				groups
-		  ON
-				childrens.group_id = groups.id
-		  WHERE DATE_FORMAT (childrens.admission_date, '%e.%m.%Y') = ? AND dismission_date IS NULL";
+        $query = self::BASE_SELECT_QUERY
+                    . " WHERE DATE_FORMAT (childrens.admission_date, '%e.%m.%Y') = ? AND dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute([$admDate]);
@@ -133,6 +119,7 @@ class ChildService implements ChildServiceInterface
     /**
      * @param string $dismissionDate
      * @return ChildViewData[]|\Generator
+     * Намира всички отписани деца по здадена дата
      */
     public function findByDismissionDate(string $dismissionDate)
     {
@@ -168,30 +155,12 @@ class ChildService implements ChildServiceInterface
     /**
      * @param string $name
      * @return ChildViewData[]|\Generator
+     * Намира деца по зададено име
      */
     public function findByName(string $name)
     {
-        $query = "
-          SELECT
-              childrens.id,
-              childrens.name,
-              surname AS surName,
-              lastname As lastName,
-              egn,
-              groups.name AS groupName,
-              groups.teacher_name AS teacherName,
-              DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
-              is_present AS isPresent,
-			  missing_reason AS missingReason,
-			  missing_from AS missingFrom,
-			  missing_to AS missingTo
-		  FROM
-				childrens
-		  INNER JOIN
-				groups
-		  ON
-				childrens.group_id = groups.id
-		  WHERE childrens.name = ? AND dismission_date IS NULL";
+        $query = self::BASE_SELECT_QUERY
+                    ." WHERE childrens.name = ? AND dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute([$name]);
@@ -204,30 +173,12 @@ class ChildService implements ChildServiceInterface
     /**
      * @param string $groupName
      * @return ChildViewData[]|\Generator
+     * Намира деца по зададена група
      */
     public function findByGroup(string $groupName)
     {
-        $query = "
-          SELECT
-              childrens.id,
-              childrens.name,
-              surname AS surName,
-              lastname As lastName,
-              egn,
-              groups.name AS groupName,
-              groups.teacher_name AS teacherName,
-              DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
-              is_present AS isPresent,
-			  missing_reason AS missingReason,
-			  missing_from AS missingFrom,
-			  missing_to AS missingTo
-		  FROM
-				childrens
-		  INNER JOIN
-				groups
-		  ON
-				childrens.group_id = groups.id
-		  WHERE groups.name = ? AND childrens.dismission_date IS NULL";
+        $query = self::BASE_SELECT_QUERY
+                    . " WHERE groups.name = ? AND childrens.dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute([$groupName]);
@@ -239,30 +190,12 @@ class ChildService implements ChildServiceInterface
 
     /**
      * @return ChildViewData[]|\Generator
+     * Намира всички деца, които отсъстват в момента
      */
     public function findByMissingNow()
     {
-        $query = "
-          SELECT
-              childrens.id,
-              childrens.name,
-              surname AS surName,
-              lastname As lastName,
-              egn,
-              groups.name AS groupName,
-              groups.teacher_name AS teacherName,
-              DATE_FORMAT (admission_date, '%e.%m.%Y') AS admissionDate,
-              is_present AS isPresent,
-			  missing_reason AS missingReason,
-			  missing_from AS missingFrom,
-			  missing_to AS missingTo
-		  FROM
-				childrens
-		  INNER JOIN
-				groups
-		  ON
-				childrens.group_id = groups.id
-		  WHERE is_present = 'no' AND dismission_date IS NULL";
+        $query = self::BASE_SELECT_QUERY
+                    . " WHERE is_present = 'no' AND dismission_date IS NULL";
 
         $statement = $this->db->prepare($query);
         $statement->execute();
@@ -275,6 +208,7 @@ class ChildService implements ChildServiceInterface
 
     /**
      * @return TemplatesViewData
+     * Връща всички групи, в които има свободни места
      */
     public function getAddChildViewData()
     {
@@ -301,6 +235,10 @@ class ChildService implements ChildServiceInterface
         return $viewData;
     }
 
+    /**
+     * @return TemplatesViewData
+     * Връща всички групи в детската градина
+     */
     public function getIndexViewData()
     {
         $query = "SELECT id, name FROM groups";
@@ -320,6 +258,15 @@ class ChildService implements ChildServiceInterface
 
     }
 
+    /**
+     * @param $name
+     * @param $surName
+     * @param $lastName
+     * @param $egn
+     * @param $groupId
+     * @throws \Exception
+     * Функция за добавяне на дете в регистъра
+     */
     public function addChild($name, $surName, $lastName, $egn, $groupId)
     {
         if (empty($name)){
@@ -394,6 +341,13 @@ class ChildService implements ChildServiceInterface
         ]);
     }
 
+    /**
+     * @param string $reason
+     * @param string $missingTo
+     * @param string $id
+     * @throws \Exception
+     * Функция за отбелязване на дадено дете като отсъстващо
+     */
     public function changeToMissing(string $reason, string $missingTo, string $id)
     {
         if (empty($reason)){
@@ -425,6 +379,11 @@ class ChildService implements ChildServiceInterface
         $statement->execute(['no', $reason, $missingFromDate, $missingToDate, $id]);
     }
 
+    /**
+     * @param string $id
+     * @throws \Exception
+     * Функция за отбелязване на дадено дете като присъстващо
+     */
     public function changeToPresent(string $id)
     {
         if (!$this->childExist($id)){
@@ -444,6 +403,11 @@ class ChildService implements ChildServiceInterface
 
     }
 
+    /**
+     * @param $id
+     * @return bool
+     * Проверка дали има група с даденото id
+     */
     private function groupExist($id)
     {
         $query = "SELECT id FROM groups WHERE id = ?";
@@ -455,6 +419,11 @@ class ChildService implements ChildServiceInterface
         return !!$row;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     * Проверка дали има дете с даденото id
+     */
     private function childExist($id)
     {
         $query = "SELECT id FROM childrens WHERE id = ?";
@@ -466,10 +435,13 @@ class ChildService implements ChildServiceInterface
         return !!$row;
     }
 
+    /**
+     * @param $inputDate
+     * @return string
+     * Взема само датата от полето за въвеждане на дата
+     */
     private function extractDate($inputDate)
     {
-        //$spacePosition = strpos($inputDate, " ");
-        //return substr($inputDate, 0, $spacePosition - 1);
         return trim(substr($inputDate, 0, 10));
     }
 }
