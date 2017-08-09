@@ -175,8 +175,6 @@ class ChildViewData
      */
     public function getMissingPeriod()
     {
-        if ($this->getIsPresent() === 'no'){
-            return "от {$this->getMissingFrom()} до {$this->getMissingTo()}";
-        }
+        return "от {$this->getMissingFrom()} до {$this->getMissingTo()}";
     }
 }

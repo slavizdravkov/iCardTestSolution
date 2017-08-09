@@ -37,7 +37,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Администриране <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="add-child.php">Запиши дете в регистъра</a></li>
-                            <li><a href="#">Добави група</a></li>
+                            <li><a href="add-group.php">Добави група</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -50,7 +50,7 @@
     <?php if($templateData->getError()): ?>
         <div class="alert alert-dismissible alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <strong><?= $templateData->getError(); ?></strong> <a href="#" class="alert-link">Направете корекции</a> и изпратете отново.
+            <strong><?= $templateData->getError(); ?></strong> <a href="index.php" class="alert-link">Направете корекции</a> и изпратете отново.
         </div>
     <?php endif; ?>
 
@@ -73,47 +73,59 @@
         </thead>
         <tbody>
             <?php foreach ($childData as $child): ?>
-                <tr>
-                    <td><?=$child->getName(); ?></td>
-                    <td><?=$child->getSurName(); ?></td>
-                    <td><?=$child->getLastName(); ?></td>
-                    <td><?=$child->getEgn(); ?></td>
-                    <td><?=$child->getGroupName(); ?></td>
-                    <td><?=$child->getAge(); ?></td>
-                    <td><?=$child->getTeacherName(); ?></td>
-                    <td><?=$child->getAdmissionDate(); ?></td>
-                    <td><?=$child->getPresentStatus(); ?></td>
                     <?php if ($child->isPresentNow()): ?>
                         <form method="post" action="index.php?id=<?= $child->getId(); ?>" class="form-horizontal">
-                            <td><input class="form-control" type="text" id="inputSmall" name="missingReason"></td>
-                            <td>
-                                <div class="col-lg-8">
-                                    <div class="row">
-                                        <div class=''>
-                                            <div class="form-group">
-                                                <div class='input-group date' id='datetimepicker2'>
-                                                    <input type='text' class="form-control" name="missingTo">
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
+                            <tr>
+                                <td><?=$child->getName(); ?></td>
+                                <td><?=$child->getSurName(); ?></td>
+                                <td><?=$child->getLastName(); ?></td>
+                                <td><?=$child->getEgn(); ?></td>
+                                <td><?=$child->getGroupName(); ?></td>
+                                <td><?=$child->getAge(); ?></td>
+                                <td><?=$child->getTeacherName(); ?></td>
+                                <td><?=$child->getAdmissionDate(); ?></td>
+                                <td><?=$child->getPresentStatus(); ?></td>
+                                <td><input class="form-control" type="text" id="inputSmall" name="missingReason"></td>
+                                <td>
+                                    <div class="col-lg-8">
+                                        <div class="row">
+                                            <div class=''>
+                                                <div class="form-group">
+                                                    <div class='input-group date datepicker-me-class' id='datetimepicker2'>
+                                                        <input type='text' class="form-control" name="missingTo">
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <button type="submit" class="btn btn-primary" name="missing">Отсъства</button>
-                            </td>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary" name="missing">Отсъства</button>
+                                </td>
+                            </tr>
                         </form>
                     <?php else: ?>
+                    <tr>
+                        <td><?=$child->getName(); ?></td>
+                        <td><?=$child->getSurName(); ?></td>
+                        <td><?=$child->getLastName(); ?></td>
+                        <td><?=$child->getEgn(); ?></td>
+                        <td><?=$child->getGroupName(); ?></td>
+                        <td><?=$child->getAge(); ?></td>
+                        <td><?=$child->getTeacherName(); ?></td>
+                        <td><?=$child->getAdmissionDate(); ?></td>
+                        <td><?=$child->getPresentStatus(); ?></td>
                         <td><?=$child->getMissingReason(); ?></td>
-                        <td><?=$child->getMissingPeriod(); ?></td>
                         <?php if ($child->getTeacherName()): ?>
+                            <td><?=$child->getMissingPeriod(); ?></td>
                             <td>
                                 <a href="index.php?id=<?= $child->getId(); ?>"><button type="button" class="btn btn-primary" name="isPresent">Присъства</button> </a>
                             </td>
                         <?php else: ?>
+                            <td></td>
                             <td></td>
                         <?php endif; ?>
                     <?php endif; ?>
@@ -154,14 +166,14 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="key">
                         <label for="filterString" class="col-sm-4 control-label">Ключ</label>
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="filterString" placeholder="Ключ" name="filterString">
                         </div>
                     </div>
 
-                    <div class="container">
+                    <div class="container" id="inpDate">
                         <div class="row">
                             <label for="datetimepicker1" class="col-sm-4 control-label">Изберете дата</label>
                             <div class='col-sm-4'>
@@ -177,7 +189,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="groups">
                         <label for="select" class="col-sm-4 control-label">Група</label>
                         <div class="col-sm-4">
                             <select class="form-control" id="select" name="groupName">
@@ -207,9 +219,14 @@
             $('#datetimepicker1').datetimepicker({
                 locale: 'bg'
             });
-            $('#datetimepicker2').datetimepicker({
+            $('.datepicker-me-class').datetimepicker({
                 locale: 'bg'
             });
+//            $('#key').attr('style', 'display: none');
+//            $('#inpDate').attr('style', 'display: none');
+//            $('#groups').attr('style', 'display: none');
+//            $('#select').change(console.log(123));
+            //console.log($('#select option:selected'));
         });
     </script>
 </body>

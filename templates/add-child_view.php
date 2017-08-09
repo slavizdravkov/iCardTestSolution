@@ -30,7 +30,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Администриране <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="add-child.php">Запиши дете в регистъра</a></li>
-                            <li><a href="#">Добави група</a></li>
+                            <li><a href="add-group.php">Добави група</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -56,28 +56,28 @@
                     <div class="form-group">
                         <label for="name" class="col-sm-4 control-label">Име</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="name" placeholder="Име" name="name">
+                            <input type="text" class="form-control" id="name" placeholder="Име" name="name" value="<?=isset($templateData->getFormData()['name']) ? $templateData->getFormData()['name'] : '';?>">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="surName" class="col-sm-4 control-label">Презиме</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="surName" placeholder="Презиме" name="surName">
+                            <input type="text" class="form-control" id="surName" placeholder="Презиме" name="surName" value="<?=isset($templateData->getFormData()['surName']) ? $templateData->getFormData()['surName'] : '';?>">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="lastName" class="col-sm-4 control-label">Фамилия</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="lastName" placeholder="Фамилия" name="lastName">
+                            <input type="text" class="form-control" id="lastName" placeholder="Фамилия" name="lastName" value="<?=isset($templateData->getFormData()['lastName']) ? $templateData->getFormData()['lastName'] : '';?>">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="egn" class="col-sm-4 control-label">ЕГН</label>
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="egn" placeholder="ЕГН" name="egn">
+                            <input type="text" class="form-control" id="egn" placeholder="ЕГН" name="egn" value="<?=isset($templateData->getFormData()['egn']) ? $templateData->getFormData()['egn'] : '';?>">
                         </div>
                     </div>
 
@@ -95,7 +95,10 @@
                             <div class="col-sm-4">
                                 <select class="form-control" id="select" name="groupId">
                                     <?php foreach ($templateData->getGroups() as $group): ?>
-                                        <option value="<?=$group->getId();?>">
+                                        <option <?= isset($templateData->getFormData()['groupId'])
+                                        && $templateData->getFormData()['groupId'] == $group->getId()
+                                            ? 'selected'
+                                            : '';?> value="<?=$group->getId();?>">
                                             <?=$group->getName();?>
                                         </option>
                                     <?php endforeach; ?>

@@ -1,10 +1,12 @@
 <?php
 require_once 'app.php';
 
-//var_dump($_GET);
-//var_dump($_POST);
-//exit;
 $templateData = $childService->getIndexViewData();
+
+if (isset($_SESSION['error'])){
+    $templateData->setError($_SESSION['error']);
+    unset($_SESSION['error']);
+}
 
 if (isset($_GET['id'])){
     if (isset($_POST['missing'])){
@@ -15,14 +17,14 @@ if (isset($_GET['id'])){
                 $_GET['id']);
 
         }catch (Exception $e){
-            $templateData->setError($e->getMessage());
+            $_SESSION['error'] = $e->getMessage();
         }
     }
     else{
         try{
             $childService->changeToPresent($_GET['id']);
         } catch (Exception $e){
-            $templateData->setError($e->getMessage());
+            $_SESSION['error'] = $e->getMessage();
         }
     }
     header("Location: index.php");

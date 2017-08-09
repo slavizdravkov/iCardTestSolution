@@ -14,3 +14,4 @@ $db = new \Adapter\PDODatabase(
 
 $app = new \Core\Application();
 $childService = new \Services\ChildService($db);
+$groupService = new \Services\GroupService($db);

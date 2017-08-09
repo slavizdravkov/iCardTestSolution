@@ -219,7 +219,7 @@ class ChildService implements ChildServiceInterface
                   WHERE
                     (SELECT COUNT(*)
                     FROM childrens
-                    WHERE childrens.group_id = groups.id) <= 9";
+                    WHERE childrens.group_id = groups.id) < 9";
         $statement = $this->db->prepare($query);
         $statement->execute();
 
@@ -289,6 +289,10 @@ class ChildService implements ChildServiceInterface
             throw new \Exception('Въведеното ЕГН не е валидно.');
         }
 
+        if (!$this->isValidEgn($egn)){
+            throw new \Exception('Въведеното ЕГН не е валидно.');
+        }
+
         $admissionDate = null;
         $isPresent = null;
         $status = 'waiting';
@@ -351,15 +355,19 @@ class ChildService implements ChildServiceInterface
     public function changeToMissing(string $reason, string $missingTo, string $id)
     {
         if (empty($reason)){
-            throw new \Exception('Не е въведена причина за отсъствието');
+            throw new \Exception('Не е въведена причина за отсъствието.');
         }
 
         if (empty($missingTo)){
-            throw new \Exception('Не е въведено до кога ще отсъства');
+            throw new \Exception('Не е въведено до кога ще отсъства.');
         }
 
         if (!$this->childExist($id)){
-            throw new \Exception('Детето го няма в регистъра');
+            throw new \Exception('Детето го няма в регистъра.');
+        }
+
+        if (!$this->isValidDate($missingTo)){
+            throw new \Exception('Въведената дата е грешна.');
         }
 
         $missingFromDate = new \DateTime();
@@ -387,7 +395,7 @@ class ChildService implements ChildServiceInterface
     public function changeToPresent(string $id)
     {
         if (!$this->childExist($id)){
-            throw new \Exception('Детето го няма в регистъра');
+            throw new \Exception('Детето го няма в регистъра.');
         }
 
         $query = "UPDATE childrens
@@ -443,5 +451,30 @@ class ChildService implements ChildServiceInterface
     private function extractDate($inputDate)
     {
         return trim(substr($inputDate, 0, 10));
+    }
+
+    /**
+     * @param $egn
+     * @return bool
+     * Функция за проверка валидността на цифрите, показващи месеца в ЕГН-то
+     */
+    private function isValidEgn($egn)
+    {
+        $month = intval(substr($egn, 2, 2));
+        return (($month >=41) && ($month <= 52));
+    }
+
+    /**
+     * @param $userDate
+     * @return bool
+     * Функция за провека дали въведената дата не е преди текущата
+     */
+    private function isValidDate($userDate)
+    {
+        $now = new \DateTime();
+        $inputDate = new \DateTime($userDate);
+        $interval = $inputDate->diff($now);
+
+        return $now < $inputDate;
     }
 }
