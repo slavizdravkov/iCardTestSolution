@@ -460,8 +460,29 @@ class ChildService implements ChildServiceInterface
      */
     private function isValidEgn($egn)
     {
-        $month = intval(substr($egn, 2, 2));
-        return (($month >=41) && ($month <= 52));
+        $today = new \DateTime();
+        $currentYear = intval($today->format('Y')) % 100;
+        $egnYear = intval(substr($egn, 0, 2));
+        $egnMonth = intval(substr($egn, 2, 2));
+        $egnDay = intval(substr($egn, 4, 2));
+
+        if (strval($egnYear) !== substr($egn, 0, 2)){
+            return false;
+        }
+
+        if ($currentYear <= $egnYear){
+            return false;
+        }
+
+        if ($egnMonth < 41 ||  $egnMonth > 52){
+            return false;
+        }
+
+        if ($egnDay < 1 || $egnDay > 31){
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -473,7 +494,7 @@ class ChildService implements ChildServiceInterface
     {
         $now = new \DateTime();
         $inputDate = new \DateTime($userDate);
-        $interval = $inputDate->diff($now);
+        //$interval = $inputDate->diff($now);
 
         return $now < $inputDate;
     }

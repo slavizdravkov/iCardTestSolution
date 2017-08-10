@@ -144,6 +144,9 @@
                         <label for="filterName" class="col-sm-4 control-label">Филтрирай по:</label>
                         <div class="col-sm-4">
                             <select class="form-control" id="select" name="filterName">
+                                <option value="selectFilter">
+                                    Изберете филтър от списъка
+                                </option>
                                 <option value="admissionDate">
                                     Дата на постъпване
                                 </option>
@@ -222,11 +225,49 @@
             $('.datepicker-me-class').datetimepicker({
                 locale: 'bg'
             });
-//            $('#key').attr('style', 'display: none');
-//            $('#inpDate').attr('style', 'display: none');
-//            $('#groups').attr('style', 'display: none');
-//            $('#select').change(console.log(123));
             //console.log($('#select option:selected'));
+            hideElements();
+            $('#select').on('change', function () {
+                console.log($(this).val());
+                switch ($(this).val()) {
+                    case 'admissionDate':
+                        hideElements();
+                        $('#inpDate').removeAttr('style');
+                        break;
+
+                    case 'dismissionDate':
+                        hideElements();
+                        $('#inpDate').removeAttr('style');
+                        break;
+
+                    case 'name':
+                        hideElements();
+                        $('#key').removeAttr('style');
+                        break;
+
+                    case 'group':
+                        hideElements();
+                        $('#groups').removeAttr('style');
+                        break;
+
+                    case 'missing':
+                        hideElements();
+                        break;
+
+                    case 'waiting':
+                        hideElements();
+                        break;
+
+                    default: break;
+
+                }
+            });
+
+            function hideElements() {
+                $('#key').attr('style', 'display: none');
+                $('#inpDate').attr('style', 'display: none');
+                $('#groups').attr('style', 'display: none');
+            }
         });
     </script>
 </body>
